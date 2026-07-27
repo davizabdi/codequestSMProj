@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${modo == 'novo'} ? 'Admin — Novo módulo' : 'Admin — Editar módulo'">Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:replace="~{fragments/layout :: navBreadcrumb(active='modulos')}"></header>
+
+<div class="admin-wrapper">
+    <a href="/admin/modulos" class="admin-breadcrumb-link">&larr; Voltar para módulos</a>
+
+    <div class="section-label">// ADMINISTRAÇÃO</div>
+    <h1 class="auth-title" th:text="${modo == 'novo'} ? 'Novo módulo' : 'Editar módulo'">Módulo</h1>
+
+    <div class="form-card">
+        <div class="alert-error" th:if="${erro}" th:text="${erro}">Erro de validação</div>
+
+        <form th:action="${modo == 'novo'} ? @{/admin/modulos} : @{/admin/modulos/{id}(id=${modulo.id})}"
+              method="post">
+
+            <div class="form-row-inline">
+                <div class="form-row">
+                    <label for="numero">Número</label>
+                    <input type="number" id="numero" name="numero" min="1" th:value="${modulo.numero}" required>
+                </div>
+                <div class="form-row">
+                    <label for="ordem">Ordem de exibição</label>
+                    <input type="number" id="ordem" name="ordem" min="0" th:value="${modulo.ordem}">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label for="titulo">Título</label>
+                <input type="text" id="titulo" name="titulo" placeholder="Ex: Introdução à Lógica de Programação"
+                       th:value="${modulo.titulo}" required>
+            </div>
+
+            <div class="form-row">
+                <label for="descricao">Descrição</label>
+                <textarea id="descricao" name="descricao" placeholder="Breve descrição do módulo"
+                          th:text="${modulo.descricao}"></textarea>
+            </div>
+
+            <div class="form-row">
+                <label for="topicos">Quantidade de tópicos</label>
+                <input type="number" id="topicos" name="topicos" min="0" th:value="${modulo.topicos}">
+            </div>
+
+            <div class="checkbox-row">
+                <input type="checkbox" id="disponivel" name="disponivel" th:checked="${modulo.disponivel}">
+                <label for="disponivel">Módulo disponível para os alunos</label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" th:text="${modo == 'novo'} ? 'Criar módulo' : 'Salvar alterações'">Salvar</button>
+                <a href="/admin/modulos" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

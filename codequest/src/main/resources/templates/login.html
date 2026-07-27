@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>CodeQuest — Entrar</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:replace="~{fragments/layout :: navBreadcrumb(active='auth')}"></header>
+
+<div class="auth-wrapper">
+    <div class="auth-label">// ACESSO</div>
+    <h1 class="auth-title">Bem-vindo de volta.</h1>
+
+    <form class="auth-card" method="post" th:action="@{/login}">
+        <div class="field">
+            <label for="email">E-mail</label>
+            <div class="input-wrap">
+                <span class="icon">&#9993;</span>
+                <input type="email" id="email" name="email" placeholder="dev@exemplo.com" required>
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="senha">Senha</label>
+            <div class="input-wrap">
+                <span class="icon">&#128274;</span>
+                <input type="password" id="senha" name="senha" placeholder="••••••••" required>
+                <span class="icon">&#128065;</span>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">&#8594;| Entrar</button>
+    </form>
+
+    <div class="auth-links">
+        Não tem conta? <a href="/cadastro">Cadastre-se</a>
+        <a href="/modulos" class="continue">Continuar sem conta &rarr;</a>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

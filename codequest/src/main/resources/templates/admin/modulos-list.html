@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin — Módulos</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:replace="~{fragments/layout :: navBreadcrumb(active='modulos')}"></header>
+
+<div class="admin-wrapper">
+    <div class="admin-header">
+        <div>
+            <div class="section-label">// ADMINISTRAÇÃO</div>
+            <h1 class="auth-title" style="margin-bottom:0;">Módulos</h1>
+        </div>
+        <a href="/admin/modulos/novo" class="btn btn-primary">+ Novo módulo</a>
+    </div>
+
+    <table class="admin-table" th:if="${!#lists.isEmpty(modulos)}">
+        <thead>
+        <tr>
+            <th>Nº</th>
+            <th>Título</th>
+            <th>Tópicos</th>
+            <th>Status</th>
+            <th>Questões</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="modulo : ${modulos}">
+            <td th:text="${modulo.numero}">1</td>
+            <td th:text="${modulo.titulo}">Título</td>
+            <td th:text="${modulo.topicos}">5</td>
+            <td>
+                <span th:if="${modulo.disponivel}" class="tag tag-green">Disponível</span>
+                <span th:unless="${modulo.disponivel}" class="tag tag-muted">Bloqueado</span>
+            </td>
+            <td>
+                <a th:href="@{/admin/modulos/{id}/questoes(id=${modulo.id})}" class="nav-link-muted">
+                    Ver questões &rarr;
+                </a>
+            </td>
+            <td class="actions">
+                <a th:href="@{/admin/modulos/{id}/editar(id=${modulo.id})}" class="btn btn-secondary">Editar</a>
+                <form th:action="@{/admin/modulos/{id}/excluir(id=${modulo.id})}" method="post"
+                      onsubmit="return confirm('Excluir este módulo e todas as suas questões?');">
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="empty-state" th:if="${#lists.isEmpty(modulos)}">
+        Nenhum módulo cadastrado ainda.
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>
