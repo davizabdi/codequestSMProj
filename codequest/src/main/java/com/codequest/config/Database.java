@@ -168,9 +168,29 @@ public class Database {
             stmt.setInt(1, moduloId);
             stmt.setInt(2, 2);
             stmt.setString(3, "Algoritmos");
-            stmt.setString(4, "Explicar o conceito de algoritmo.");
-            stmt.setString(5, "Um algoritmo é uma sequência finita de passos para resolver um problema.\n\nTodo algoritmo possui:\n\ninício\nsequência de ações\nfim");
-            stmt.setString(6, "Problema\n\nCalcular a média de dois alunos\n\nAlgoritmo\n\nReceber nota 1\n\nReceber nota 2\n\nSomar\n\nDividir por 2\n\nMostrar resultado");
+            stmt.setString(4, "Explicar o conceito de algoritmo e como ele se aplica no dia a dia e na solução de problemas.");
+            stmt.setString(5, """
+                O que é um algoritmo?
+
+                Um algoritmo é uma sequência finita e organizada de passos que resolve um problema ou executa uma tarefa.
+
+                Os algoritmos não existem apenas na programação. Eles fazem parte do nosso dia a dia.
+
+                Sempre que seguimos uma receita culinária, um manual de instruções ou as etapas para montar um móvel, estamos seguindo um algoritmo.
+                """);
+            stmt.setString(6, """
+                Problema:
+                Calcular a média de duas notas.
+
+                Algoritmo:
+                1. Receber a primeira nota.
+                2. Receber a segunda nota.
+                3. Somar as duas notas.
+                4. Dividir o resultado por dois.
+                5. Mostrar a média.
+
+                Observe que existe uma ordem lógica. Se tentarmos dividir antes de somar, o algoritmo deixa de funcionar corretamente.
+                """);
             stmt.setInt(7, 2);
             stmt.addBatch();
 
@@ -178,8 +198,20 @@ public class Database {
             stmt.setInt(1, moduloId);
             stmt.setInt(2, 3);
             stmt.setString(3, "Fluxogramas");
-            stmt.setString(4, "Mostrar que algoritmos também podem ser representados visualmente.");
-            stmt.setString(5, "Antes do pseudocódigo, muitos algoritmos são desenhados.\n\nMostrar os símbolos clássicos:\n\n🟢 Início/Fim\n\n▭ Processo\n\n◇ Decisão\n\n▱ Entrada/Saída");
+            stmt.setString(4, "Mostrar que algoritmos também podem ser representados visualmente através de símbolos padronizados.");
+            stmt.setString(5, """
+                O que é um fluxograma?
+
+                Um fluxograma é um desenho que representa visualmente a sequência de execução de um algoritmo.
+
+                Cada símbolo possui um significado específico. Isso facilita o entendimento da lógica antes mesmo de escrever o código.
+
+                Principais símbolos:
+                🟢 Início/Fim: Representa onde o algoritmo começa e termina.
+                ▭ Processo: Representa uma ação ou cálculo.
+                ▱ Entrada/Saída: Representa informações que entram ou saem do programa.
+                ◇ Decisão: Representa um ponto onde o algoritmo precisa escolher um caminho.
+                """);
             stmt.setString(6, """
                 <svg width="250" height="420" viewBox="0 0 250 420" xmlns="http://www.w3.org/2000/svg" style="fill:none;stroke:#00ff88;stroke-width:2;font-family:monospace;font-size:14px;margin:auto;display:block;">
                   <!-- Início -->
@@ -230,9 +262,30 @@ public class Database {
             stmt.setInt(1, moduloId);
             stmt.setInt(2, 4);
             stmt.setString(3, "Pseudocódigo");
-            stmt.setString(4, "");
-            stmt.setString(5, "Agora começamos a escrever.\n\nIntroduzir apenas três comandos:\n\nalgoritmo\n\ninicio\n\nfim\n\nDepois\n\nescreva()");
-            stmt.setString(6, "algoritmo \"Olá\"\n\ninicio\n\nescreva(\"Olá Mundo\")\n\nfim");
+            stmt.setString(4, "Aprender o conceito de pseudocódigo e como representar algoritmos de forma estruturada sem depender de uma linguagem de programação.");
+            stmt.setString(5, """
+                Depois de planejar um algoritmo, precisamos escrevê-lo de uma forma organizada. Entretanto, ainda não queremos utilizar uma linguagem de programação. Para isso utilizamos o pseudocódigo.
+
+                O que é pseudocódigo?
+                Pseudocódigo é uma forma de escrever algoritmos utilizando uma linguagem simples, parecida com português, mas organizada como um programa. Ele serve para representar a lógica sem depender de uma linguagem específica.
+
+                O simulador:
+                Durante este curso você encontrará um simulador que executará cada algoritmo passo a passo. Ele mostrará:
+                • qual linha está sendo executada;
+                • quais variáveis mudaram;
+                • qual foi a saída produzida.
+
+                Assim você poderá visualizar exatamente como o computador interpreta cada instrução.
+                """);
+            stmt.setString(6, """
+                algoritmo "BoasVindas"
+
+                inicio
+
+                    escreva("Olá!")
+
+                fim
+                """);
             stmt.setInt(7, 4);
             stmt.addBatch();
 
@@ -240,9 +293,35 @@ public class Database {
             stmt.setInt(1, moduloId);
             stmt.setInt(2, 5);
             stmt.setString(3, "Entrada, Processamento e Saída");
-            stmt.setString(4, "");
-            stmt.setString(5, "Aqui você prepara o aluno para Variáveis.\n\nExplicar o famoso modelo:\n\nEntrada\n\n↓\n\nProcessamento\n\n↓\n\nSaída");
-            stmt.setString(6, "Calculadora\n\nEntrada\n\n5\n\n7\n\n↓\n\nProcessamento\n\nSomar\n\n↓\n\nSaída\n\n12");
+            stmt.setString(4, "Compreender o ciclo fundamental (Entrada -> Processamento -> Saída) presente em praticamente todos os programas de computador.");
+            stmt.setString(5, """
+                Quase todos os programas seguem o mesmo ciclo de funcionamento. Independentemente de ser um jogo, um aplicativo bancário ou uma rede social, todos recebem informações, fazem algum processamento e apresentam um resultado. Esse modelo é conhecido como Entrada → Processamento → Saída.
+
+                📥 Entrada
+                São todas as informações fornecidas ao programa.
+                Exemplos: Nome do usuário, Idade, Dois números digitados, Um clique do mouse, Um arquivo enviado. Sem dados de entrada, muitos programas não conseguem realizar nenhuma tarefa.
+
+                ⚙️ Processamento
+                É o trabalho realizado pelo computador. Durante essa etapa o programa faz cálculos, toma decisões, organiza informações, realiza comparações e executa algoritmos. É nessa fase que acontece a "mágica" da programação.
+
+                📤 Saída
+                Depois de processar as informações, o programa apresenta um resultado.
+                Exemplos: Exibir uma mensagem, Mostrar um valor, Abrir uma página, Exibir uma imagem, Informar que um login foi realizado com sucesso.
+                """);
+            stmt.setString(6, """
+                Exemplo completo: Calculadora
+
+                Entrada:
+                O usuário digita: 8 e 4
+
+                Processamento:
+                O programa realiza: 8 + 4
+
+                Saída:
+                O resultado exibido será: 12
+
+                Esse mesmo ciclo acontece em praticamente todos os programas que utilizamos diariamente.
+                """);
             stmt.setInt(7, 5);
             stmt.addBatch();
 

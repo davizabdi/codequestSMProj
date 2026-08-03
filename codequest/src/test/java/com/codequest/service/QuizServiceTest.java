@@ -80,9 +80,30 @@ public class QuizServiceTest {
         assertEquals(7, resultado.getPontuacao());
         assertFalse(resultado.isNotaMaxima());
         assertFalse(resultado.isSemPerderVidas());
+        assertTrue(resultado.isPassou());
         assertEquals(2, resultado.getEstrelas());
         // XP: 100 (etapas) + 100 (conclusao) = 200 XP
         assertEquals(200, resultado.getXpGanha());
+    }
+
+    @Test
+    @DisplayName("Não deve conceder XP de conclusão de módulo se o aluno reprovar no quiz")
+    public void testProcessarResultadoDerrota() {
+        Map<Integer, String> respostas = new HashMap<>();
+        for (int i = 1; i <= 3; i++) {
+            respostas.put(i, "B"); // 3 acertos
+        }
+        for (int i = 4; i <= 10; i++) {
+            respostas.put(i, "A"); // 7 erros
+        }
+
+        QuizResultDTO resultado = quizService.processarResultado(1, "aluno_demo", respostas, 0); // 0 vidas
+
+        assertEquals(3, resultado.getPontuacao());
+        assertFalse(resultado.isPassou());
+        assertEquals(0, resultado.getEstrelas());
+        // XP: apenas 100 (etapas) e NÃO 200 (sem bônus de conclusão de módulo)
+        assertEquals(100, resultado.getXpGanha());
     }
 
     private static class StubQuestaoRepository extends QuestaoRepository {

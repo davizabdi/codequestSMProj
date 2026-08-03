@@ -432,7 +432,7 @@
                 <div class="xp-card-val">+100 XP</div>
                 <div class="xp-card-label">Etapas Concluídas</div>
             </div>
-            <div class="xp-card">
+            <div class="xp-card" id="cardModuloCompleted">
                 <div class="xp-card-icon">🏆</div>
                 <div class="xp-card-val">+100 XP</div>
                 <div class="xp-card-label">Módulo Concluído</div>
@@ -455,6 +455,7 @@
 
         <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-top: 2rem;">
             <a th:href="@{'/modulos/' + ${modulo.id + 1}}" 
+               id="btnNextModule"
                class="btn-restart" 
                style="background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan)); color: #0b0f17; flex: 1; min-width: 220px;">
                &#128640; Próximo Módulo &rarr;
@@ -675,25 +676,44 @@
     }
 
     function showResults(res) {
-        playSound('win');
         const container = document.getElementById('resultsContainer');
         container.style.display = 'block';
 
-        // Atualizar Estrelas
-        if (res.estrelas >= 1) document.getElementById('star1').classList.add('active');
-        if (res.estrelas >= 2) document.getElementById('star2').classList.add('active');
-        if (res.estrelas >= 3) document.getElementById('star3').classList.add('active');
+        const titleEl = document.getElementById('resultsTitle');
+        const subtitleEl = document.getElementById('resultsSubtitle');
+        const cardModuloCompleted = document.getElementById('cardModuloCompleted');
+        const btnNextModule = document.getElementById('btnNextModule');
 
-        // Badges e Recompensas
-        if (res.notaMaxima) {
-            document.getElementById('cardPerfect').style.display = 'block';
-        }
-        if (res.semPerderVidas) {
-            document.getElementById('cardNoLives').style.display = 'block';
+        if (res.passou) {
+            playSound('win');
+            titleEl.innerText = "Quiz Concluído!";
+            subtitleEl.innerText = `Parabéns! Você acertou ${res.pontuacao} de ${res.totalQuestoes} questões e concluiu o módulo!`;
+
+            if (res.estrelas >= 1) document.getElementById('star1').classList.add('active');
+            if (res.estrelas >= 2) document.getElementById('star2').classList.add('active');
+            if (res.estrelas >= 3) document.getElementById('star3').classList.add('active');
+
+            if (res.notaMaxima) {
+                document.getElementById('cardPerfect').style.display = 'block';
+            }
+            if (res.semPerderVidas) {
+                document.getElementById('cardNoLives').style.display = 'block';
+            }
+            cardModuloCompleted.style.display = 'block';
+            btnNextModule.style.display = 'inline-block';
+        } else {
+            playSound('wrong');
+            titleEl.innerText = "Que Pena! Tente Novamente 💔";
+            subtitleEl.innerText = `Você acertou ${res.pontuacao} de ${res.totalQuestoes} questões. Suas vidas acabaram ou você não atingiu a nota mínima.`;
+
+            // Ocultar bônus e navegação do próximo módulo
+            cardModuloCompleted.style.display = 'none';
+            document.getElementById('cardPerfect').style.display = 'none';
+            document.getElementById('cardNoLives').style.display = 'none';
+            btnNextModule.style.display = 'none';
         }
 
         document.getElementById('totalXpDisplay').innerText = `Total: +${res.xpGanha} XP`;
-        document.getElementById('resultsSubtitle').innerText = `Você acertou ${res.pontuacao} de ${res.totalQuestoes} questões!`;
     }
 
     window.onload = loadQuestions;

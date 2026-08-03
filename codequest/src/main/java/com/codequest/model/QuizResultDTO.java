@@ -10,12 +10,13 @@ public class QuizResultDTO {
     private int vidasRestantes;
     private boolean notaMaxima;
     private boolean semPerderVidas;
+    private boolean passou;
     private List<QuestionFeedbackDTO> detalheQuestoes;
 
     public QuizResultDTO() {}
 
     public QuizResultDTO(int pontuacao, int totalQuestoes, int xpGanha, int estrelas,
-                         int vidasRestantes, boolean notaMaxima, boolean semPerderVidas,
+                         int vidasRestantes, boolean notaMaxima, boolean semPerderVidas, boolean passou,
                          List<QuestionFeedbackDTO> detalheQuestoes) {
         this.pontuacao = pontuacao;
         this.totalQuestoes = totalQuestoes;
@@ -24,6 +25,7 @@ public class QuizResultDTO {
         this.vidasRestantes = vidasRestantes;
         this.notaMaxima = notaMaxima;
         this.semPerderVidas = semPerderVidas;
+        this.passou = passou;
         this.detalheQuestoes = detalheQuestoes;
     }
 
@@ -34,6 +36,7 @@ public class QuizResultDTO {
     public int getVidasRestantes() { return vidasRestantes; }
     public boolean isNotaMaxima() { return notaMaxima; }
     public boolean isSemPerderVidas() { return semPerderVidas; }
+    public boolean isPassou() { return passou; }
     public List<QuestionFeedbackDTO> getDetalheQuestoes() { return detalheQuestoes; }
 
     public static class QuestionFeedbackDTO {
