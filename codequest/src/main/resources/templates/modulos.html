@@ -13,13 +13,15 @@
     <div class="section-label">// TRILHA DE APRENDIZADO</div>
     <h1 class="auth-title" style="margin-bottom:0;">Escolha um módulo</h1>
 
-    <div class="modulos-grid">
-        <div th:each="modulo : ${modulos}"
-             class="module-card"
-             th:classappend="${!modulo.disponivel} ? 'locked'">
+    <div class="modulos-trail">
+        <a th:each="modulo : ${modulos}"
+           th:href="${modulo.disponivel} ? @{'/modulos/' + ${modulo.id}} : '#'"
+           class="module-card"
+           th:classappend="${!modulo.disponivel} ? 'locked'"
+           style="text-decoration: none; color: inherit; display: block;">
 
             <span th:if="${modulo.disponivel}" class="module-available-badge">Disponível</span>
-            <span th:unless="${modulo.disponivel}" class="module-lock">&#128274;</span>
+            <span th:unless="${modulo.disponivel}" class="module-lock-badge">Em desenvolvimento</span>
 
             <div class="module-icon">&lt;/&gt;</div>
             <div class="module-number" th:text="'Módulo ' + ${#numbers.formatInteger(modulo.numero, 2)}">Módulo 01</div>
@@ -27,14 +29,13 @@
             <div class="module-desc" th:text="${modulo.descricao}">Descrição</div>
 
             <div class="module-meta" th:if="${modulo.disponivel}">
-                <span th:text="${modulo.topicos} + ' tópicos'">5 tópicos</span>
-                <span>&#9889; questões disponíveis</span>
+                <span th:text="${modulo.topicos} + ' etapas de aprendizado'">5 etapas</span>
+                <span style="color: var(--green); font-weight: 600;">Iniciar &rarr;</span>
             </div>
-        </div>
+        </a>
 
         <p th:if="${#lists.isEmpty(modulos)}" class="footer-muted">
-            Nenhum módulo cadastrado ainda.
-            <a href="/admin/modulos/novo" style="color: var(--green);">Cadastrar o primeiro &rarr;</a>
+            Nenhum módulo disponível no momento.
         </p>
     </div>
 </div>

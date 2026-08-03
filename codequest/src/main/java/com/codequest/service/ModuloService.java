@@ -8,7 +8,15 @@ import java.util.NoSuchElementException;
 
 public class ModuloService {
 
-    private final ModuloRepository repository = new ModuloRepository();
+    private final ModuloRepository repository;
+
+    public ModuloService() {
+        this(new ModuloRepository());
+    }
+
+    public ModuloService(ModuloRepository repository) {
+        this.repository = repository;
+    }
 
     public List<Modulo> listar() {
         return repository.findAll();

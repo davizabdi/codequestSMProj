@@ -1,11 +1,15 @@
 package com.codequest;
 
 import com.codequest.config.Database;
+import com.codequest.controller.EtapaController;
 import com.codequest.controller.ModuloController;
 import com.codequest.controller.QuestaoController;
+import com.codequest.controller.QuizController;
 import com.codequest.service.ModuloService;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import java.util.Map;
 
@@ -17,11 +21,32 @@ public class App {
 
         ModuloController moduloController = new ModuloController();
         QuestaoController questaoController = new QuestaoController();
+        EtapaController etapaController = new EtapaController();
+        QuizController quizController = new QuizController();
         ModuloService moduloService = new ModuloService();
+
+        TemplateEngine templateEngine = new TemplateEngine();
+        
+        ClassLoaderTemplateResolver resolverWithNoSuffix = new ClassLoaderTemplateResolver();
+        resolverWithNoSuffix.setPrefix("templates/");
+        resolverWithNoSuffix.setSuffix("");
+        resolverWithNoSuffix.setCharacterEncoding("UTF-8");
+        resolverWithNoSuffix.setOrder(1);
+        resolverWithNoSuffix.setCheckExistence(true);
+
+        ClassLoaderTemplateResolver resolverWithHtmlSuffix = new ClassLoaderTemplateResolver();
+        resolverWithHtmlSuffix.setPrefix("templates/");
+        resolverWithHtmlSuffix.setSuffix(".html");
+        resolverWithHtmlSuffix.setCharacterEncoding("UTF-8");
+        resolverWithHtmlSuffix.setOrder(2);
+        resolverWithHtmlSuffix.setCheckExistence(true);
+
+        templateEngine.addTemplateResolver(resolverWithNoSuffix);
+        templateEngine.addTemplateResolver(resolverWithHtmlSuffix);
 
         Javalin app = Javalin.create(config -> {
             config.staticFiles.add("/static");
-            config.fileRenderer(new JavalinThymeleaf());
+            config.fileRenderer(new JavalinThymeleaf(templateEngine));
         }).start(7000);
 
         // ---------- Rotas públicas ----------
@@ -31,9 +56,16 @@ public class App {
         app.get("/login", ctx -> ctx.render("login.html"));
         app.get("/cadastro", ctx -> ctx.render("login.html", Map.of("cadastro", true)));
 
-        // Página de módulos agora lê os dados reais do banco
+        // Página de módulos e navegação de etapas
         app.get("/modulos", ctx ->
                 ctx.render("modulos.html", Map.of("modulos", moduloService.listar())));
+        app.get("/modulos/{id}", etapaController::verModuloDetails);
+        app.get("/modulos/{moduloId}/etapas/{numero}", etapaController::verEtapa);
+
+        // Rotas do Quiz Final e Gamificação
+        app.get("/modulos/{moduloId}/quiz", quizController::verQuizPage);
+        app.get("/api/modulos/{moduloId}/quiz/questoes", quizController::obterQuestoes);
+        app.post("/api/modulos/{moduloId}/quiz/finalizar", quizController::finalizarQuiz);
 
         // ---------- Rotas de administração (CRUD) ----------
 

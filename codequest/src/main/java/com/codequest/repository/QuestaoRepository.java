@@ -54,8 +54,8 @@ public class QuestaoRepository {
     public Questao create(Questao questao) {
         String sql = """
                 INSERT INTO questoes
-                    (modulo_id, enunciado, alternativa_a, alternativa_b, alternativa_c, alternativa_d, correta, ordem)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    (modulo_id, categoria, nivel, enunciado, alternativa_a, alternativa_b, alternativa_c, alternativa_d, correta, explicacao, ordem)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         try (Connection conn = Database.getConnection();
@@ -78,8 +78,8 @@ public class QuestaoRepository {
     public void update(Questao questao) {
         String sql = """
                 UPDATE questoes
-                SET modulo_id = ?, enunciado = ?, alternativa_a = ?, alternativa_b = ?,
-                    alternativa_c = ?, alternativa_d = ?, correta = ?, ordem = ?
+                SET modulo_id = ?, categoria = ?, nivel = ?, enunciado = ?, alternativa_a = ?, alternativa_b = ?,
+                    alternativa_c = ?, alternativa_d = ?, correta = ?, explicacao = ?, ordem = ?
                 WHERE id = ?
                 """;
 
@@ -87,7 +87,7 @@ public class QuestaoRepository {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             bind(stmt, questao);
-            stmt.setInt(9, questao.getId());
+            stmt.setInt(12, questao.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao atualizar questão " + questao.getId(), e);
@@ -109,25 +109,31 @@ public class QuestaoRepository {
 
     private void bind(PreparedStatement stmt, Questao questao) throws SQLException {
         stmt.setInt(1, questao.getModuloId());
-        stmt.setString(2, questao.getEnunciado());
-        stmt.setString(3, questao.getAlternativaA());
-        stmt.setString(4, questao.getAlternativaB());
-        stmt.setString(5, questao.getAlternativaC());
-        stmt.setString(6, questao.getAlternativaD());
-        stmt.setString(7, questao.getCorreta());
-        stmt.setInt(8, questao.getOrdem());
+        stmt.setString(2, questao.getCategoria() != null ? questao.getCategoria() : "Geral");
+        stmt.setString(3, questao.getNivel() != null ? questao.getNivel() : "Fácil");
+        stmt.setString(4, questao.getEnunciado());
+        stmt.setString(5, questao.getAlternativaA());
+        stmt.setString(6, questao.getAlternativaB());
+        stmt.setString(7, questao.getAlternativaC());
+        stmt.setString(8, questao.getAlternativaD());
+        stmt.setString(9, questao.getCorreta());
+        stmt.setString(10, questao.getExplicacao() != null ? questao.getExplicacao() : "");
+        stmt.setInt(11, questao.getOrdem());
     }
 
     private Questao map(ResultSet rs) throws SQLException {
         return new Questao(
                 rs.getInt("id"),
                 rs.getInt("modulo_id"),
+                rs.getString("categoria"),
+                rs.getString("nivel"),
                 rs.getString("enunciado"),
                 rs.getString("alternativa_a"),
                 rs.getString("alternativa_b"),
                 rs.getString("alternativa_c"),
                 rs.getString("alternativa_d"),
                 rs.getString("correta"),
+                rs.getString("explicacao"),
                 rs.getInt("ordem")
         );
     }

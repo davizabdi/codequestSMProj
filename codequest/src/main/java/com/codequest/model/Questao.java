@@ -10,22 +10,28 @@ public class Questao {
     private String alternativaC;
     private String alternativaD;
     private String correta; // "A", "B", "C" ou "D"
+    private String categoria;
+    private String nivel;
+    private String explicacao;
     private int ordem;
 
     public Questao() {
     }
 
-    public Questao(Integer id, int moduloId, String enunciado,
+    public Questao(Integer id, int moduloId, String categoria, String nivel, String enunciado,
                    String alternativaA, String alternativaB, String alternativaC, String alternativaD,
-                   String correta, int ordem) {
+                   String correta, String explicacao, int ordem) {
         this.id = id;
         this.moduloId = moduloId;
+        this.categoria = categoria;
+        this.nivel = nivel;
         this.enunciado = enunciado;
         this.alternativaA = alternativaA;
         this.alternativaB = alternativaB;
         this.alternativaC = alternativaC;
         this.alternativaD = alternativaD;
         this.correta = correta;
+        this.explicacao = explicacao;
         this.ordem = ordem;
     }
 
@@ -34,6 +40,12 @@ public class Questao {
 
     public int getModuloId() { return moduloId; }
     public void setModuloId(int moduloId) { this.moduloId = moduloId; }
+
+    public String getCategoria() { return categoria; }
+    public void setCategoria(String categoria) { this.categoria = categoria; }
+
+    public String getNivel() { return nivel; }
+    public void setNivel(String nivel) { this.nivel = nivel; }
 
     public String getEnunciado() { return enunciado; }
     public void setEnunciado(String enunciado) { this.enunciado = enunciado; }
@@ -52,6 +64,9 @@ public class Questao {
 
     public String getCorreta() { return correta; }
     public void setCorreta(String correta) { this.correta = correta; }
+
+    public String getExplicacao() { return explicacao; }
+    public void setExplicacao(String explicacao) { this.explicacao = explicacao; }
 
     public int getOrdem() { return ordem; }
     public void setOrdem(int ordem) { this.ordem = ordem; }
