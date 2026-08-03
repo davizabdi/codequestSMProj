@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Quiz Final: ' + ${modulo.titulo} + ' — CodeQuest'">CodeQuest — Quiz Final</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Fira+Code:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --quiz-bg: #0b0f17;
+            --card-bg: rgba(22, 27, 34, 0.75);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --accent-green: #00ff88;
+            --accent-green-glow: rgba(0, 255, 136, 0.35);
+            --accent-purple: #a78bfa;
+            --accent-cyan: #38bdf8;
+            --danger-red: #ff4757;
+            --gold-yellow: #ffd700;
+        }
+
+        body {
+            background-color: var(--quiz-bg);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 136, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(167, 139, 250, 0.05) 0%, transparent 40%);
+            font-family: 'Outfit', sans-serif;
+            color: #e6edf3;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quiz-wrapper {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* Top HUD Bar */
+        .hud-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .lives-container {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 1.4rem;
+        }
+
+        .heart {
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s;
+        }
+
+        .heart.lost {
+            filter: grayscale(1) opacity(0.3);
+            transform: scale(0.8);
+        }
+
+        .progress-track {
+            flex: 1;
+            max-width: 320px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            margin: 0 1.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00ff88, #38bdf8);
+            border-radius: 20px;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 12px var(--accent-green-glow);
+        }
+
+        .question-counter {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            color: #8b949e;
+            font-weight: 700;
+        }
+
+        /* Question Card */
+        .question-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2.2rem;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-meta {
+            display: flex;
+            gap: 0.6rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .badge-cat {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-lvl {
+            background: rgba(167, 139, 250, 0.15);
+            color: var(--accent-purple);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .question-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+            color: #f0f6fc;
+        }
+
+        /* Options Grid */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 1.1rem 1.4rem;
+            color: #e6edf3;
+            font-family: inherit;
+            font-size: 1.05rem;
+            font-weight: 500;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(4px);
+        }
+
+        .option-key {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-right: 1rem;
+            color: #8b949e;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover:not(:disabled) .option-key {
+            background: var(--accent-green);
+            color: #000;
+        }
+
+        .option-btn.correct {
+            background: rgba(0, 255, 136, 0.12) !important;
+            border-color: var(--accent-green) !important;
+            color: #fff;
+            box-shadow: 0 0 20px var(--accent-green-glow);
+        }
+
+        .option-btn.correct .option-key {
+            background: var(--accent-green);
+            color: #000;
+        }
+
+        .option-btn.wrong {
+            background: rgba(255, 71, 87, 0.15) !important;
+            border-color: var(--danger-red) !important;
+            animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        .option-btn.wrong .option-key {
+            background: var(--danger-red);
+            color: #fff;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        /* Explanation Box */
+        .explanation-box {
+            margin-top: 1.5rem;
+            padding: 1.2rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .explanation-box.show-correct {
+            display: block;
+            background: rgba(0, 255, 136, 0.08);
+            border-left: 4px solid var(--accent-green);
+            color: #e6edf3;
+        }
+
+        .explanation-box.show-wrong {
+            display: block;
+            background: rgba(255, 71, 87, 0.08);
+            border-left: 4px solid var(--danger-red);
+            color: #e6edf3;
+        }
+
+        .btn-next {
+            margin-top: 1.8rem;
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent-green);
+            color: #0b0f17;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 20px var(--accent-green-glow);
+            display: none;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 255, 136, 0.5);
+        }
+
+        /* Results Modal / Screen */
+        .results-container {
+            display: none;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            animation: zoomIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.85); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .stars-row {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .star-item {
+            opacity: 0.2;
+            transform: scale(0.6);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .star-item.active {
+            opacity: 1;
+            transform: scale(1);
+            filter: drop-shadow(0 0 15px var(--gold-yellow));
+        }
+
+        .results-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #fff, var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .xp-badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .xp-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 1.2rem;
+            text-align: center;
+        }
+
+        .xp-card-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .xp-card-val {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+
+        .xp-card-label {
+            font-size: 0.85rem;
+            color: #8b949e;
+            margin-top: 0.2rem;
+        }
+
+        .btn-restart {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            color: #0b0f17;
+            padding: 1rem 2.5rem;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 30px var(--accent-green-glow);
+            border: none;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .btn-restart:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 255, 136, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+<header th:replace="~{fragments/layout :: navBreadcrumb(active='modulos')}"></header>
+
+<div class="quiz-wrapper">
+    <!-- HUD -->
+    <div class="hud-bar" id="hudBar">
+        <div class="lives-container" id="livesContainer">
+            <span class="heart" id="heart1">❤️</span>
+            <span class="heart" id="heart2">❤️</span>
+            <span class="heart" id="heart3">❤️</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="question-counter" id="questionCounter">Questão 1/10</div>
+    </div>
+
+    <!-- Question Box -->
+    <div class="question-card" id="questionCard">
+        <div class="question-meta">
+            <span class="badge-cat" id="badgeCategory">Categoria</span>
+            <span class="badge-lvl" id="badgeLevel">Fácil</span>
+        </div>
+        <h2 class="question-title" id="questionTitle">Carregando pergunta...</h2>
+
+        <div class="options-list" id="optionsList">
+            <!-- Opções geradas via JS -->
+        </div>
+
+        <div class="explanation-box" id="explanationBox"></div>
+        <button class="btn-next" id="btnNext" onclick="nextQuestion()">Próxima Questão &rarr;</button>
+    </div>
+
+    <!-- Results Screen -->
+    <div class="results-container" id="resultsContainer">
+        <div class="stars-row">
+            <span class="star-item" id="star1">⭐</span>
+            <span class="star-item" id="star2">⭐</span>
+            <span class="star-item" id="star3">⭐</span>
+        </div>
+        <h1 class="results-title" id="resultsTitle">Quiz Concluído!</h1>
+        <p style="color: #8b949e; font-size: 1.1rem;" id="resultsSubtitle">Você mandou muito bem no Módulo 1!</p>
+
+        <div class="xp-badges-grid">
+            <div class="xp-card">
+                <div class="xp-card-icon">📘</div>
+                <div class="xp-card-val">+100 XP</div>
+                <div class="xp-card-label">Etapas Concluídas</div>
+            </div>
+            <div class="xp-card" id="cardModuloCompleted">
+                <div class="xp-card-icon">🏆</div>
+                <div class="xp-card-val">+100 XP</div>
+                <div class="xp-card-label">Módulo Concluído</div>
+            </div>
+            <div class="xp-card" id="cardPerfect" style="display:none;">
+                <div class="xp-card-icon">💎</div>
+                <div class="xp-card-val">+50 XP</div>
+                <div class="xp-card-label">Nota Máxima</div>
+            </div>
+            <div class="xp-card" id="cardNoLives" style="display:none;">
+                <div class="xp-card-icon">⚡</div>
+                <div class="xp-card-val">+30 XP</div>
+                <div class="xp-card-label">Sem Perder Vidas</div>
+            </div>
+        </div>
+
+        <div style="font-size: 2.2rem; font-weight: 800; color: var(--accent-green); margin: 1.5rem 0;" id="totalXpDisplay">
+            Total: +200 XP
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-top: 2rem;">
+            <a th:href="@{'/modulos/' + ${modulo.id + 1}}" 
+               id="btnNextModule"
+               class="btn-restart" 
+               style="background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan)); color: #0b0f17; flex: 1; min-width: 220px;">
+               &#128640; Próximo Módulo &rarr;
+            </a>
+            
+            <button onclick="window.location.reload()" 
+                    class="btn-restart" 
+                    style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; flex: 1; min-width: 180px;">
+               &#128257; Refazer Quiz
+            </button>
+
+            <a th:href="@{'/modulos/' + ${modulo.id}}" 
+               class="btn-restart" 
+               style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); color: #8b949e; flex: 1; min-width: 180px;">
+               &#127968; Trilha do Módulo
+            </a>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+<script th:inline="javascript">
+    const moduloId = /*[[${modulo.id}]]*/ 1;
+    let questions = [];
+    let currentIndex = 0;
+    let lives = 3;
+    let userAnswers = {}; // qId -> key (A, B, C ou D)
+    let isAnswered = false;
+
+    // Web Audio API para Efeitos Sonoros
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSound(type) {
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        const now = audioCtx.currentTime;
+
+        if (type === 'correct') {
+            // Arpejo positivo e brilhante (C5 -> E5 -> G5)
+            [523.25, 659.25, 783.99].forEach((freq, idx) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                gain.gain.setValueAtTime(0.2, now + idx * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now + idx * 0.08);
+                osc.stop(now + idx * 0.08 + 0.25);
+            });
+        } else if (type === 'wrong') {
+            // Tom grave de erro estilo game over (buzz duplo em 160Hz -> 110Hz)
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(160, now);
+            osc.frequency.exponentialRampToValueAtTime(100, now + 0.3);
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.35);
+        } else if (type === 'win') {
+            [440, 554.37, 659.25, 880].forEach((freq, idx) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, now + idx * 0.1);
+                gain.gain.setValueAtTime(0.25, now + idx * 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.4);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now + idx * 0.1);
+                osc.stop(now + idx * 0.1 + 0.4);
+            });
+        }
+    }
+
+    async function loadQuestions() {
+        try {
+            const resp = await fetch(`/api/modulos/${moduloId}/quiz/questoes`);
+            if (!resp.ok) {
+                const errText = await resp.text();
+                throw new Error(errText);
+            }
+            questions = await resp.json();
+            if (questions && questions.length > 0) {
+                renderQuestion();
+            } else {
+                document.getElementById('questionTitle').innerText = "Nenhuma questão encontrada para este módulo.";
+            }
+        } catch (e) {
+            console.error("Erro ao carregar questões:", e);
+            document.getElementById('questionTitle').innerText = "Erro ao carregar as questões. Por favor, recarregue a página.";
+        }
+    }
+
+    function renderQuestion() {
+        isAnswered = false;
+        const q = questions[currentIndex];
+
+        // Atualizar HUD
+        document.getElementById('questionCounter').innerText = `Questão ${currentIndex + 1}/${questions.length}`;
+        const fillPercent = ((currentIndex) / questions.length) * 100;
+        document.getElementById('progressFill').style.width = fillPercent + '%';
+
+        // Meta e Título
+        document.getElementById('badgeCategory').innerText = q.categoria;
+        document.getElementById('badgeLevel').innerText = q.nivel;
+        document.getElementById('questionTitle').innerText = q.enunciado;
+
+        // Limpar explicação e botão próximo
+        const expBox = document.getElementById('explanationBox');
+        expBox.className = 'explanation-box';
+        expBox.style.display = 'none';
+
+        const btnNext = document.getElementById('btnNext');
+        btnNext.style.display = 'none';
+        btnNext.innerText = "Próxima Questão \u2192";
+
+        // Renderizar Opções
+        const optionsList = document.getElementById('optionsList');
+        optionsList.innerHTML = '';
+
+        q.alternativas.forEach(op => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.dataset.key = op.key;
+            btn.innerHTML = `<span class="option-key">${op.key}</span> <span>${op.text}</span>`;
+            btn.onclick = () => selectOption(q.id, op.key, btn);
+            optionsList.appendChild(btn);
+        });
+    }
+
+    function selectOption(qId, selectedKey, btnElement) {
+        if (isAnswered) return;
+        isAnswered = true;
+
+        userAnswers[qId] = selectedKey;
+
+        const q = questions[currentIndex];
+        const isCorrect = (selectedKey === q.correta);
+
+        const buttons = document.querySelectorAll('.option-btn');
+        buttons.forEach(b => b.disabled = true);
+
+        const expBox = document.getElementById('explanationBox');
+        const btnNext = document.getElementById('btnNext');
+
+        if (isCorrect) {
+            btnElement.classList.add('correct');
+            playSound('correct');
+            expBox.className = 'explanation-box show-correct';
+            expBox.innerHTML = `<strong>\u2714 Resposta Correta!</strong><br>${q.explicacao || ''}`;
+        } else {
+            btnElement.classList.add('wrong');
+
+            // Destacar em verde a alternativa correta
+            buttons.forEach(b => {
+                if (b.dataset.key === q.correta) {
+                    b.classList.add('correct');
+                }
+            });
+
+            playSound('wrong');
+
+            // Perder vida
+            if (lives === 3) document.getElementById('heart3').classList.add('lost');
+            else if (lives === 2) document.getElementById('heart2').classList.add('lost');
+            else if (lives === 1) document.getElementById('heart1').classList.add('lost');
+            lives--;
+
+            expBox.className = 'explanation-box show-wrong';
+            expBox.innerHTML = `<strong>\u2716 Resposta Incorreta!</strong> A alternativa correta era <strong>(${q.correta})</strong>.<br>${q.explicacao || ''}`;
+
+            if (lives === 0) {
+                btnNext.innerText = "Ver Resultado (Vidas Esgotadas) \u2192";
+            }
+        }
+
+        expBox.style.display = 'block';
+        btnNext.style.display = 'block';
+    }
+
+    function nextQuestion() {
+        currentIndex++;
+        if (currentIndex < questions.length && lives > 0) {
+            renderQuestion();
+        } else {
+            finishQuiz();
+        }
+    }
+
+    async function finishQuiz() {
+        document.getElementById('questionCard').style.display = 'none';
+        document.getElementById('hudBar').style.display = 'none';
+
+        try {
+            const resp = await fetch(`/api/modulos/${moduloId}/quiz/finalizar`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    respostas: userAnswers,
+                    vidasRestantes: lives,
+                    usuarioId: "aluno_demo"
+                })
+            });
+
+            const result = await resp.json();
+            showResults(result);
+        } catch (e) {
+            console.error("Erro ao finalizar quiz:", e);
+        }
+    }
+
+    function showResults(res) {
+        const container = document.getElementById('resultsContainer');
+        container.style.display = 'block';
+
+        const titleEl = document.getElementById('resultsTitle');
+        const subtitleEl = document.getElementById('resultsSubtitle');
+        const cardModuloCompleted = document.getElementById('cardModuloCompleted');
+        const btnNextModule = document.getElementById('btnNextModule');
+
+        if (res.passou) {
+            playSound('win');
+            titleEl.innerText = "Quiz Concluído!";
+            subtitleEl.innerText = `Parabéns! Você acertou ${res.pontuacao} de ${res.totalQuestoes} questões e concluiu o módulo!`;
+
+            if (res.estrelas >= 1) document.getElementById('star1').classList.add('active');
+            if (res.estrelas >= 2) document.getElementById('star2').classList.add('active');
+            if (res.estrelas >= 3) document.getElementById('star3').classList.add('active');
+
+            if (res.notaMaxima) {
+                document.getElementById('cardPerfect').style.display = 'block';
+            }
+            if (res.semPerderVidas) {
+                document.getElementById('cardNoLives').style.display = 'block';
+            }
+            cardModuloCompleted.style.display = 'block';
+            btnNextModule.style.display = 'inline-block';
+        } else {
+            playSound('wrong');
+            titleEl.innerText = "Que Pena! Tente Novamente 💔";
+            subtitleEl.innerText = `Você acertou ${res.pontuacao} de ${res.totalQuestoes} questões. Suas vidas acabaram ou você não atingiu a nota mínima.`;
+
+            // Ocultar bônus e navegação do próximo módulo
+            cardModuloCompleted.style.display = 'none';
+            document.getElementById('cardPerfect').style.display = 'none';
+            document.getElementById('cardNoLives').style.display = 'none';
+            btnNextModule.style.display = 'none';
+        }
+
+        document.getElementById('totalXpDisplay').innerText = `Total: +${res.xpGanha} XP`;
+    }
+
+    window.onload = loadQuestions;
+</script>
+</body>
+</html>
