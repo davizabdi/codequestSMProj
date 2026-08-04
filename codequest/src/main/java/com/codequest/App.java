@@ -26,7 +26,7 @@ public class App {
         ModuloService moduloService = new ModuloService();
 
         TemplateEngine templateEngine = new TemplateEngine();
-        
+
         ClassLoaderTemplateResolver resolverWithNoSuffix = new ClassLoaderTemplateResolver();
         resolverWithNoSuffix.setPrefix("templates/");
         resolverWithNoSuffix.setSuffix("");
@@ -57,8 +57,7 @@ public class App {
         app.get("/cadastro", ctx -> ctx.render("login.html", Map.of("cadastro", true)));
 
         // Página de módulos e navegação de etapas
-        app.get("/modulos", ctx ->
-                ctx.render("modulos.html", Map.of("modulos", moduloService.listar())));
+        app.get("/modulos", ctx -> ctx.render("modulos.html", Map.of("modulos", moduloService.listar())));
         app.get("/modulos/{id}", etapaController::verModuloDetails);
         app.get("/modulos/{moduloId}/etapas/{numero}", etapaController::verEtapa);
 
