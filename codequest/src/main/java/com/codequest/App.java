@@ -44,10 +44,16 @@ public class App {
         templateEngine.addTemplateResolver(resolverWithNoSuffix);
         templateEngine.addTemplateResolver(resolverWithHtmlSuffix);
 
+        int port = 7000;
+        try {
+            port = Integer.parseInt(Database.env("PORT", "7000"));
+        } catch (NumberFormatException ignored) {
+        }
+
         Javalin app = Javalin.create(config -> {
             config.staticFiles.add("/static");
             config.fileRenderer(new JavalinThymeleaf(templateEngine));
-        }).start(7000);
+        }).start(port);
 
         // ---------- Rotas públicas ----------
 
@@ -82,7 +88,7 @@ public class App {
         app.post("/admin/modulos/{moduloId}/questoes/{id}", questaoController::atualizar);
         app.post("/admin/modulos/{moduloId}/questoes/{id}/excluir", questaoController::excluir);
 
-        System.out.println("CodeQuest rodando em http://localhost:7000");
-        System.out.println("Admin de módulos em http://localhost:7000/admin/modulos");
+        System.out.println("CodeQuest rodando na porta " + port + " (http://localhost:" + port + ")");
+        System.out.println("Admin de módulos em http://localhost:" + port + "/admin/modulos");
     }
 }

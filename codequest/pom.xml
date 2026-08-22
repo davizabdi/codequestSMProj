@@ -65,6 +65,13 @@
             <version>5.1.0</version>
         </dependency>
 
+        <!-- Dotenv para carregar variáveis de arquivo .env -->
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
         <!-- Testes JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -81,7 +88,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>6.1.2</version>
+            <version>5.10.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -97,7 +104,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <AppClass>com.codequest.App</AppClass>
+                            <mainClass>com.codequest.App</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
