@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin — Questões</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
@@ -22,7 +23,8 @@
         </a>
     </div>
 
-    <table class="admin-table" th:if="${!#lists.isEmpty(questoes)}">
+    <div class="table-scroll" th:if="${!#lists.isEmpty(questoes)}">
+    <table class="admin-table">
         <thead>
         <tr>
             <th>#</th>
@@ -47,6 +49,7 @@
         </tr>
         </tbody>
     </table>
+    </div>
 
     <div class="empty-state" th:if="${#lists.isEmpty(questoes)}">
         Nenhuma questão cadastrada para este módulo ainda.

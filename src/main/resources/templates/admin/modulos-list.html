@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin — Módulos</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
@@ -18,7 +19,8 @@
         <a href="/admin/modulos/novo" class="btn btn-primary">+ Novo módulo</a>
     </div>
 
-    <table class="admin-table" th:if="${!#lists.isEmpty(modulos)}">
+    <div class="table-scroll" th:if="${!#lists.isEmpty(modulos)}">
+    <table class="admin-table">
         <thead>
         <tr>
             <th>Nº</th>
@@ -53,6 +55,7 @@
         </tr>
         </tbody>
     </table>
+    </div>
 
     <div class="empty-state" th:if="${#lists.isEmpty(modulos)}">
         Nenhum módulo cadastrado ainda.

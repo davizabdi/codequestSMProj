@@ -11,7 +11,14 @@
 
 <!-- Navbar com breadcrumb, usada nas páginas internas (login, módulos, etc) -->
 <header th:fragment="navBreadcrumb(active)" class="navbar">
-    <a href="/" class="logo">&gt;_ <span>CodeQuest</span></a>
+    <div class="navbar-brand-row">
+        <a href="/" class="logo">&gt;_ <span>CodeQuest</span></a>
+        <button class="nav-toggle" id="navToggle" aria-label="Abrir navegação" onclick="document.querySelector('.breadcrumb').classList.toggle('open')">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
     <nav class="breadcrumb">
         <a href="/login" th:classappend="${active == 'auth'} ? 'crumb-active'">Auth</a>
         <span class="crumb-sep">&gt;</span>

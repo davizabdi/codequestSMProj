@@ -34,6 +34,33 @@ a { color: inherit; text-decoration: none; }
     justify-content: space-between;
     padding: 20px 48px;
     border-bottom: 1px solid var(--border-soft);
+    position: relative;
+}
+
+.navbar-brand-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-toggle {
+    display: none;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-toggle span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all 0.2s ease;
 }
 
 .logo {
@@ -61,6 +88,19 @@ a { color: inherit; text-decoration: none; }
 }
 .crumb-active { color: var(--green); font-weight: 600; }
 .crumb-sep { color: var(--muted-2); }
+
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+.table-scroll .admin-table {
+    border: none;
+    margin-bottom: 0;
+}
 
 /* ---------- Botões ---------- */
 .btn {
@@ -525,8 +565,269 @@ a { color: inherit; text-decoration: none; }
     border-radius: 8px;
 }
 
+/* ==========================================================================
+   RESPONSIVIDADE (Mobile First & Breakpoints)
+   ========================================================================== */
+
 @media (max-width: 900px) {
-    .hero { flex-direction: column; }
-    .feature-grid, .modulos-grid { grid-template-columns: 1fr; }
-    .terminal { width: 100%; }
+    .hero {
+        flex-direction: column;
+        gap: 40px;
+        padding: 48px 24px 60px;
+    }
+    .hero-content {
+        max-width: 100%;
+        text-align: left;
+    }
+    .feature-grid, .modulos-grid {
+        grid-template-columns: 1fr;
+    }
+    .terminal {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Navbar */
+    .navbar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px 20px;
+        gap: 12px;
+    }
+
+    .navbar-brand-row {
+        width: 100%;
+    }
+
+    .nav-toggle {
+        display: flex;
+    }
+
+    .breadcrumb {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 14px 16px;
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        margin-top: 4px;
+        width: 100%;
+    }
+
+    .breadcrumb.open {
+        display: flex;
+    }
+
+    .crumb-sep {
+        display: none;
+    }
+
+    .breadcrumb a, .breadcrumb span {
+        padding: 6px 0;
+        font-size: 14px;
+        width: 100%;
+        border-bottom: 1px solid var(--border-soft);
+    }
+    .breadcrumb a:last-child, .breadcrumb span:last-child {
+        border-bottom: none;
+    }
+
+    /* Hero */
+    .hero-title {
+        font-size: 32px;
+        line-height: 1.2;
+    }
+
+    .hero-text {
+        font-size: 14px;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Seção Features */
+    .section {
+        padding: 40px 20px;
+    }
+
+    .feature-card {
+        padding: 24px 20px;
+    }
+
+    /* Footer */
+    .footer {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    /* Módulos */
+    .modulos-wrapper {
+        padding: 32px 16px;
+    }
+
+    .modulos-trail {
+        margin-top: 24px;
+    }
+
+    .module-card {
+        padding: 20px;
+    }
+
+    .module-lock-badge,
+    .module-available-badge {
+        position: static;
+        display: inline-block;
+        margin-bottom: 12px;
+    }
+
+    .module-meta {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    /* Módulo Detalhes & Etapas */
+    .tree-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+
+    .tree-item .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .nav-buttons {
+        flex-direction: column !important;
+        gap: 16px !important;
+        align-items: stretch !important;
+        text-align: center;
+    }
+
+    .nav-buttons .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Admin */
+    .admin-wrapper {
+        padding: 24px 16px 40px;
+    }
+
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .admin-header .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .form-card {
+        padding: 20px 16px;
+    }
+
+    .form-row-inline {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Auth */
+    .auth-wrapper {
+        padding: 60px 16px 40px;
+    }
+
+    .auth-card {
+        width: 100%;
+        max-width: 360px;
+        padding: 20px;
+    }
+
+    /* Quiz */
+    .quiz-wrapper {
+        padding: 0 12px;
+        margin: 1rem auto;
+    }
+
+    .hud-bar {
+        padding: 0.8rem 1rem !important;
+        gap: 0.5rem;
+    }
+
+    .question-card {
+        padding: 1.5rem 1.2rem !important;
+    }
+
+    .option-btn {
+        padding: 0.8rem 1rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .option-key {
+        min-width: 28px !important;
+        height: 28px !important;
+        font-size: 0.8rem !important;
+        margin-right: 0.6rem !important;
+    }
+
+    .xp-badges-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .badge {
+        font-size: 11px;
+        padding: 4px 10px;
+        white-space: normal;
+        line-height: 1.4;
+    }
+
+    .hero-title {
+        font-size: 26px;
+    }
+
+    .terminal-body {
+        padding: 16px;
+    }
+
+    .terminal-question {
+        font-size: 14px;
+    }
+
+    .option {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+
+    .auth-title {
+        font-size: 22px;
+    }
 }
