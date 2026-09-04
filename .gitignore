@@ -1,2 +1,14 @@
 # Project exclude paths
-/codequest/target/
+target/
+
+# Environment configuration
+.env
+!.env.example
+
+# IDE and OS files
+.agents/
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db

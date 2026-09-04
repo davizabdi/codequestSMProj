@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${modo == 'novo'} ? 'Admin — Nova questão' : 'Admin — Editar questão'">Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:replace="~{fragments/layout :: navBreadcrumb(active='quiz')}"></header>
+
+<div class="admin-wrapper">
+    <a th:href="@{/admin/modulos/{id}/questoes(id=${modulo.id})}" class="admin-breadcrumb-link">
+        &larr; Voltar para questões de <span th:text="${modulo.titulo}">módulo</span>
+    </a>
+
+    <div class="section-label">// QUESTÃO</div>
+    <h1 class="auth-title" th:text="${modo == 'novo'} ? 'Nova questão' : 'Editar questão'">Questão</h1>
+
+    <div class="form-card">
+        <div class="alert-error" th:if="${erro}" th:text="${erro}">Erro de validação</div>
+
+        <form th:action="${modo == 'novo'}
+                    ? @{/admin/modulos/{moduloId}/questoes(moduloId=${modulo.id})}
+                    : @{/admin/modulos/{moduloId}/questoes/{id}(moduloId=${modulo.id},id=${questao.id})}"
+              method="post">
+
+            <div class="form-row">
+                <label for="enunciado">Enunciado</label>
+                <textarea id="enunciado" name="enunciado" placeholder="Ex: Qual tipo de dado armazena 36.5?"
+                          th:text="${questao.enunciado}" required></textarea>
+            </div>
+
+            <div class="form-row">
+                <label for="alternativaA">Alternativa A</label>
+                <input type="text" id="alternativaA" name="alternativaA" th:value="${questao.alternativaA}" required>
+            </div>
+            <div class="form-row">
+                <label for="alternativaB">Alternativa B</label>
+                <input type="text" id="alternativaB" name="alternativaB" th:value="${questao.alternativaB}" required>
+            </div>
+            <div class="form-row">
+                <label for="alternativaC">Alternativa C</label>
+                <input type="text" id="alternativaC" name="alternativaC" th:value="${questao.alternativaC}" required>
+            </div>
+            <div class="form-row">
+                <label for="alternativaD">Alternativa D</label>
+                <input type="text" id="alternativaD" name="alternativaD" th:value="${questao.alternativaD}" required>
+            </div>
+
+            <div class="form-row-inline">
+                <div class="form-row">
+                    <label for="correta">Alternativa correta</label>
+                    <select id="correta" name="correta">
+                        <option value="A" th:selected="${questao.correta == 'A'}">A</option>
+                        <option value="B" th:selected="${questao.correta == 'B'}">B</option>
+                        <option value="C" th:selected="${questao.correta == 'C'}">C</option>
+                        <option value="D" th:selected="${questao.correta == 'D'}">D</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label for="ordem">Ordem</label>
+                    <input type="number" id="ordem" name="ordem" min="0" th:value="${questao.ordem}">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" th:text="${modo == 'novo'} ? 'Criar questão' : 'Salvar alterações'">Salvar</button>
+                <a th:href="@{/admin/modulos/{id}/questoes(id=${modulo.id})}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

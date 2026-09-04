@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>fragments</title></head>
+<body>
+
+<!-- Navbar simples usada na home: apenas logo + link à direita -->
+<header th:fragment="navHome" class="navbar">
+    <a href="/" class="logo">&gt;_ <span>CodeQuest</span></a>
+    <a href="/modulos" class="nav-link-muted">Explorar sem conta &rarr;</a>
+</header>
+
+<!-- Navbar com breadcrumb, usada nas páginas internas (login, módulos, etc) -->
+<header th:fragment="navBreadcrumb(active)" class="navbar">
+    <div class="navbar-brand-row">
+        <a href="/" class="logo">&gt;_ <span>CodeQuest</span></a>
+        <button class="nav-toggle" id="navToggle" aria-label="Abrir navegação" onclick="document.querySelector('.breadcrumb').classList.toggle('open')">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+    <nav class="breadcrumb">
+        <a href="/login" th:classappend="${active == 'auth'} ? 'crumb-active'">Auth</a>
+        <span class="crumb-sep">&gt;</span>
+        <a href="/modulos" th:classappend="${active == 'modulos'} ? 'crumb-active'">Módulos</a>
+        <span class="crumb-sep">&gt;</span>
+        <span th:classappend="${active == 'conteudo'} ? 'crumb-active'">Conteúdo</span>
+        <span class="crumb-sep">&gt;</span>
+        <span th:classappend="${active == 'quiz'} ? 'crumb-active'">Quiz</span>
+    </nav>
+</header>
+
+<footer th:fragment="footer" class="footer">
+    <span>CodeQuest &copy; 2026</span>
+    <span class="footer-muted">Protótipo educacional</span>
+</footer>
+
+</body>
+</html>

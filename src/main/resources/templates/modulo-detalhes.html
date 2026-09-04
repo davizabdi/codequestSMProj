@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${modulo.titulo} + ' — CodeQuest'">CodeQuest — Módulo</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:replace="~{fragments/layout :: navBreadcrumb(active='modulos')}"></header>
+
+<div class="modulos-wrapper">
+    <a href="/modulos" class="nav-link-muted" style="display:inline-block; margin-bottom:1rem;">&larr; Voltar para módulos</a>
+
+    <div class="section-label" th:text="'// MÓDULO ' + ${#numbers.formatInteger(modulo.numero, 2)}">// MÓDULO 01</div>
+    <h1 class="auth-title" style="margin-bottom:0.5rem;" th:text="${modulo.titulo}">Introdução à Lógica de Programação</h1>
+    <p class="hero-text" style="margin-bottom:2rem; max-width:700px;" th:text="${modulo.descricao}">Descrição do módulo</p>
+
+    <div class="tree-container" style="background: var(--bg-card, #12181b); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+        <h2 style="font-size: 1.1rem; color: var(--green, #00ff88); margin-bottom: 1.2rem; font-family: monospace;">
+            &#128194; TRILHA DE CONTEÚDO
+        </h2>
+
+        <div class="tree-list" style="display: flex; flex-direction: column; gap: 0.8rem;">
+            <a th:each="etapa : ${etapas}"
+               th:href="@{'/modulos/' + ${modulo.id} + '/etapas/' + ${etapa.numero}}"
+               class="tree-item"
+               style="display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1.2rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; text-decoration: none; color: inherit; transition: all 0.2s;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span style="font-family: monospace; color: var(--green, #00ff88); font-weight: bold;"
+                          th:text="'Etapa ' + ${etapa.numero}">Etapa 1</span>
+                    <span style="font-weight: 500;" th:text="${etapa.titulo}">Título da Etapa</span>
+                </div>
+                <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">Acessar &rarr;</span>
+            </a>
+
+            <!-- Quiz Final -->
+            <a th:href="@{'/modulos/' + ${modulo.id} + '/quiz'}" class="tree-item quiz-item"
+               style="display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1.2rem; background: rgba(0, 255, 136, 0.08); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 8px; text-decoration: none; color: inherit; transition: all 0.2s;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span style="font-family: monospace; color: var(--green, #00ff88); font-weight: bold;">&#127942; Quiz Final</span>
+                    <span style="font-weight: 500;">Avaliação de fixação do Módulo</span>
+                </div>
+                <span class="btn btn-primary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; background: var(--green, #00ff88); color: #000;">
+                    Iniciar Quiz &rarr;
+                </span>
+            </a>
+        </div>
+    </div>
+
+    <div style="text-align: right;">
+        <a th:href="@{'/modulos/' + ${modulo.id} + '/etapas/1'}" class="btn btn-primary" style="padding: 0.8rem 1.8rem; font-size: 1rem;">
+            Começar Etapa 1 &rarr;
+        </a>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>
