@@ -179,7 +179,7 @@
         .option-btn:hover:not(:disabled) {
             background: rgba(255, 255, 255, 0.07);
             border-color: rgba(255, 255, 255, 0.2);
-            transform: translateX(4px);
+            transform: scale(1.02) translateX(4px);
         }
 
         .option-key {
@@ -276,7 +276,7 @@
         }
 
         .btn-next:hover {
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.03);
             box-shadow: 0 6px 25px rgba(0, 255, 136, 0.5);
         }
 
@@ -377,7 +377,7 @@
         }
 
         .btn-restart:hover {
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.03);
             box-shadow: 0 12px 35px rgba(0, 255, 136, 0.6);
         }
     </style>
@@ -718,5 +718,6 @@
 
     window.onload = loadQuestions;
 </script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

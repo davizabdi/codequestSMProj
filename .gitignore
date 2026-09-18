@@ -7,6 +7,8 @@ target/
 
 # IDE and OS files
 .agents/
+AGENTS.md
+**/AGENTS.md
 .idea/
 *.iml
 .vscode/
